@@ -1,9 +1,13 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 
-const CustomSelect = () => {
+const CustomSelect = ({ parentOptionList }) => {
   const [selectedText, setSelectedText] = useState('')
   const [showOptionList, setShowOptionList] = useState(false)
   const [optionsList, setOptionsList] = useState([])
+
+  useEffect(() => {
+    setOptionsList(parentOptionList)
+  }, [parentOptionList])
 
   return (
     <div >

@@ -1,4 +1,4 @@
-import { Divider } from 'antd'
+import { Divider, PageHeader } from 'antd'
 import React, { useState } from 'react'
 import LocationList from './components/LocationList'
 import SearchLocationBar from './components/SearchLocationBar'
@@ -11,7 +11,10 @@ function App () {
 
   return (
     <>
-      <Divider orientation="left">WeatherCheck V {config.version}</Divider>
+      <PageHeader
+        title="WeatherCheck"
+        subTitle={`Version ${config.version}`}
+      />
       <SearchLocationBar
         setData={setData}
         setLoading={setLoading} />

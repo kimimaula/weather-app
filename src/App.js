@@ -1,8 +1,9 @@
 import React, { useState } from 'react'
-import { Select } from 'antd'
+import { Input, notification } from 'antd'
 import config from './components/utils/config'
 import axios from 'axios'
-const { Option } = Select
+import './App.css'
+const { Search } = Input
 
 async function getWeather (coords) {
   const fetchWeather = axios({
@@ -12,37 +13,49 @@ async function getWeather (coords) {
   console.log('fetchWeather', fetchWeather)
 }
 
-function App () {
+async function getLocation (address) {
+  const parsedAddress = encodeURIComponent(address)
+  const fetchLocationData = await axios({
+    method: 'get',
+    url: `https://maps.googleapis.com/maps/api/geocode/json?address=${parsedAddress}&key=${config.mapkey}`
+  })
+  if (fetchLocationData.data.status.includes('ZERO')) {
+    return notification.warning({
+      message: 'Error',
+      description:
+        'No Results Found'
+    })
+  } else if (fetchLocationData.data.status.includes('OK')) {
+    //add the results to a list
+  } else {
+    return notification.warning({
+      message: 'Error',
+      description:
+        'An Error Occured, please refresh or try again later'
+    })
+  }
+}
+
+function App (props) {
+  const initialState = { lat: '', lng: '' }
   const [data, setData] = useState([])
   const [value, setValue] = useState(undefined)
-  const handleSearch = value => {
-    if (value) {
-      fetch(value, data => setData({ data }))
-    } else {
-      setData({ data: [] })
-    }
-  }
+  const [mapPosition, setMapPosition] = useState(initialState)
   const handleChange = value => {
-    setValue({ value })
+    const searchValue = value || []
+    setValue({ searchValue })
   }
-  const options = data.map(d => <Option key={d.value}>{d.text}</Option>)
+
   return (
-    <>
-      <Select
-        showSearch
-        value={value}
-        placeholder='Search An area'
-        style={this.props.style}
-        defaultActiveFirstOption={false}
-        showArrow={false}
-        filterOption={false}
-        onSearch={handleSearch}
-        onChange={handleChange}
-        notFoundContent={null}
-      >
-        {options}
-      </Select>
-    </>
+    <div style={{ display: 'flex', justifyContent: 'center' }}>
+      <Search
+        placeholder="Input Address"
+        enterButton="Search"
+        size="large"
+        style={{ marginTop: 100, width: '50vw' }}
+        onSearch={value => getLocation(value)}
+      />
+    </div>
   )
 }
 

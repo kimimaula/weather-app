@@ -1,6 +1,7 @@
 import React from 'react'
 import { List, Skeleton, Button } from 'antd'
 import displayWeatherModal from '../DisplayWeatherModal/index'
+import { isMobile } from 'react-device-detect'
 
 export default function LocationList ({ loading, data }) {
   return (
@@ -8,7 +9,7 @@ export default function LocationList ({ loading, data }) {
       loading={loading}
       itemLayout="horizontal"
       dataSource={data}
-      style={{ marginTop: 50, marginLeft: 'auto', marginRight: 'auto', width: '50vw' }}
+      style={{ marginTop: 50, marginLeft: 'auto', marginRight: 'auto', width: isMobile ? '90vw' : '50vw' }}
       renderItem={item => (
         <List.Item
           actions={[<Button onClick={() => { displayWeatherModal(item.geometry.location, item.formatted_address) }} key="get-weather">Get Weather</Button>]}

@@ -9,6 +9,7 @@
     "antd": "^4.5.4",
     "axios": "^0.19.2",
     "react": "^16.13.1",
+    "react-device-detect": "^1.13.1",
     "react-dom": "^16.13.1",
     "react-google-maps": "^9.4.5",
     "react-scripts": "3.4.3",

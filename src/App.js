@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { Input, notification, Divider, List, Skeleton, Avatar } from 'antd'
+import { Input, notification, Divider, List, Skeleton, Button } from 'antd'
 import config from './components/utils/config'
 import axios from 'axios'
 import './App.css'
@@ -16,17 +16,21 @@ async function getWeather (coords) {
 function App (props) {
   const initialState = { lat: '', lng: '' }
   const [data, setData] = useState([])
-  const [value, setValue] = useState(undefined)
-  const [mapPosition, setMapPosition] = useState(initialState)
+  const [weatherModal, setWeatherModal] = useState(initialState)
   const [loading, setLoading] = useState(false)
-  const handleChange = value => {
-    const searchValue = value || []
-    setValue({ searchValue })
-  }
 
   async function getLocation (address) {
     setLoading(true)
     const parsedAddress = encodeURIComponent(address)
+    if (!parsedAddress) {
+      notification.warning({
+        message: 'Error',
+        description:
+          'Empty Search'
+      })
+      setData([])
+      return setLoading(false)
+    }
     const fetchLocationData = await axios({
       method: 'get',
       url: `https://maps.googleapis.com/maps/api/geocode/json?address=${parsedAddress}&key=${config.mapkey}`
@@ -66,14 +70,13 @@ function App (props) {
       <Divider orientation="middle">Location</Divider>
       <div>
         <List
-          className="demo-loadmore-list"
           loading={loading}
           itemLayout="horizontal"
           dataSource={data}
           style={{ marginTop: 50, marginLeft: 'auto', marginRight: 'auto', width: '50vw' }}
           renderItem={item => (
             <List.Item
-              actions={[<a key="get-weather">Get Weather</a>]}
+              actions={[<Button key="get-weather">Get Weather</Button>]}
             >
               <Skeleton avatar title={false} loading={loading} active>
                 <List.Item.Meta
